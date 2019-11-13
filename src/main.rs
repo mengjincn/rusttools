@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate serde_derive;
 use structopt::StructOpt;
 use indicatif::ProgressBar;
 use std::time::Duration;
@@ -12,13 +14,16 @@ fn main() {
         println!("{}: {}", cli.timestamp, tool::convert_timestamp_to_date(cli.timestamp));
     }
     if cli.encode.is_some() {
-        let string = &(cli.encode.unwrap());
-        println!("encode {} : {}", string, tool::encode_to_base64(string));
+        let encode_string = &(cli.encode.unwrap());
+        println!("encode {} : {}", encode_string, tool::encode_to_base64(encode_string));
     }
     if cli.decode.is_some() {
-        let string = &(cli.decode.unwrap());
-        println!("decode {} : {}", string, tool::decode_of_base64(string));
+        let undecode_string = &(cli.decode.unwrap());
+        println!("decode {} : {}", undecode_string, tool::decode_of_base64(undecode_string));
     }
+    println!("timestamp: {}", cli.timestamp);
+    tool::http_test();
+    tool::json_test();
 //
 //    debug!("debug info");
 //    info!("starting up");
