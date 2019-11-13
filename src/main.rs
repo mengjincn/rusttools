@@ -8,22 +8,30 @@ fn main() {
 
     let cli:Cli = Cli::from_args();
 
-    if cli.timestamp>0 {
+    if cli.timestamp!=-1 {
         println!("{}: {}", cli.timestamp, tool::convert_timestamp_to_date(cli.timestamp));
     }
-    println!("cli: {:?}", cli);
-    debug!("debug info");
-    info!("starting up");
-    warn!("oops, nothing implemented!");
-    let pb = indicatif::ProgressBar::new(100);
-    for i in 0..100 {
-        std::thread::sleep(Duration::from_millis(10));
-        if i % 10 == 0 {
-            pb.println(format!("[+] finished #{}\t", i));
-        }
-        pb.inc(1);
+    if cli.encode.is_some() {
+        let string = &(cli.encode.unwrap());
+        println!("encode {} : {}", string, tool::encode_to_base64(string));
     }
-    pb.finish_with_message("done");
+    if cli.decode.is_some() {
+        let string = &(cli.decode.unwrap());
+        println!("decode {} : {}", string, tool::decode_of_base64(string));
+    }
+//
+//    debug!("debug info");
+//    info!("starting up");
+//    warn!("oops, nothing implemented!");
+//    let pb = indicatif::ProgressBar::new(100);
+//    for i in 0..100 {
+//        std::thread::sleep(Duration::from_millis(10));
+//        if i % 10 == 0 {
+//            pb.println(format!("[+] finished #{}\t", i));
+//        }
+//        pb.inc(1);
+//    }
+//    pb.finish_with_message("done");
 }
 
 
@@ -31,13 +39,13 @@ fn main() {
 #[derive(Debug, StructOpt)]
 #[structopt(name = "tools", about = "A collection tools of daily use.")]
 struct Cli {
-    #[structopt(short = "t")]
+    #[structopt(short = "t",required=false,default_value="-1")]
     timestamp:i64,
 
-    /// The pattern to look for
-    pattern: String,
-
-    /// The path to the file to read
-    #[structopt(parse(from_os_str))]
-    path: std::path::PathBuf,
+    /// The string will be encode to base64
+    #[structopt(long)]
+    encode: Option<String>,
+    /// The base64 string will be decode
+    #[structopt(long)]
+    decode: Option<String>,
 }
